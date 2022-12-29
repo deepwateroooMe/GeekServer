@@ -25,11 +25,9 @@ namespace Geek.Server.App.Logic.Login
         public ConcurrentDictionary<string, PlayerInfo> PlayerMap = new();
     }
 
-
     [Comp(ActorType.Server)]
     public class LoginComp : StateComp<LoginState>
     {
 
     }
-
 }

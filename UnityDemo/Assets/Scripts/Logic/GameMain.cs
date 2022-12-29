@@ -6,25 +6,21 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Logic
-{
-    public class GameMain : MonoBehaviour
-    {
+namespace Logic {
 
+    public class GameMain : MonoBehaviour {
         public static GameMain Singleton = null;
-        public Text Txt;
 
+        public Text Txt;
         public string serverIp = "127.0.0.1";
         public int serverPort = 8899;
         public string userName = "123456";
 
-        private void Awake()
-        {
+        private void Awake() {
             Singleton = this;
         }
 
-        async void Start()
-        {
+        async void Start() {
             Txt = GameObject.Find("Text").GetComponent<Text>();
             GameDataManager.ReloadAll();
             GameClient.Singleton.Init();
@@ -35,15 +31,13 @@ namespace Logic
             await ReqComposePet();
         }
 
-        private async Task ConnectServer()
-        {
+        private async Task ConnectServer() {
             _ = GameClient.Singleton.Connect(serverIp, serverPort);
             await MsgWaiter.StartWait(GameClient.ConnectEvt);
         }
 
-        private Task Login()
-        {
-            //登陆
+        private Task Login() {
+            // 登陆
             var req = new ReqLogin();
             req.SdkType = 0;
             req.SdkToken = "";
@@ -58,38 +52,29 @@ namespace Logic
             return DemoService.Singleton.SendMsg(req);
         }
 
-        private Task ReqBagInfo()
-        {
+        private Task ReqBagInfo() {
             ReqBagInfo req = new ReqBagInfo();
             return DemoService.Singleton.SendMsg(req);
         }
 
-        private Task ReqComposePet()
-        {
+        private Task ReqComposePet() {
             ReqComposePet req = new ReqComposePet();
             req.FragmentId = 1000;
             return DemoService.Singleton.SendMsg(req);
         }
 
-
-        private void OnApplicationQuit()
-        {
+        private void OnApplicationQuit() {
             Debug.Log("OnApplicationQuit");
             GameClient.Singleton.Close();
             MsgWaiter.DisposeAll();
         }
 
-
-        public void AppendLog(string str)
-        {
-            if (Txt != null)
-            {
+        public void AppendLog(string str) {
+            if (Txt != null) {
                 var temp = Txt.text + "\r\n";
                 temp += str;
                 Txt.text = temp;
             }
         }
-
     }
 }
-
