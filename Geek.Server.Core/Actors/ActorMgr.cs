@@ -8,9 +8,9 @@ using Geek.Server.Core.Utils;
 
 namespace Geek.Server.Core.Actors {
 
-    public class ActorMgr {
+    public class ActorMgr { // 顾名思义:就成为Actor的管理者。多线程安全
         private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        private static readonly ConcurrentDictionary<long, Actor> actorDic = new(); // 多线程访问安全
+        private static readonly ConcurrentDictionary<long, Actor> actorDic = new(); // 多线程访问安全　字典：　[ID,　Actor]
 
         public static async Task<T> GetCompAgent<T>(long actorId) where T : ICompAgent {
             var actor = await GetOrNew(actorId);
@@ -32,7 +32,6 @@ namespace Geek.Server.Core.Actors {
             var actorType = CompRegister.GetActorType(compType);
             return GetCompAgent<T>(IdGenerator.GetActorID(actorType));
         }
-
         internal static async Task<Actor> GetOrNew(long actorId) {
             var actorType = IdGenerator.GetActorType(actorId);
             if (actorType == ActorType.Role) { // <<<<<<<<<< 
@@ -57,7 +56,7 @@ namespace Geek.Server.Core.Actors {
         public static Task AllFinish() {
             var tasks = new List<Task>();
             foreach (var actor in actorDic.Values) {
-                tasks.Add(actor.SendAsync(() => true));
+                tasks.Add(actor.SendAsync(() => true)); // 这里开始有点儿没看懂，基本原理不懂，需要稍微补一下
             }
             return Task.WhenAll(tasks);
         }

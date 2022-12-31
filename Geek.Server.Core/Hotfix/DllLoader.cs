@@ -1,35 +1,28 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 
-namespace Geek.Server.Core.Hotfix
-{
-    internal class DllLoader
-    {
-        public DllLoader(string dllPath)
-        {
+namespace Geek.Server.Core.Hotfix {
+
+    internal class DllLoader {
+
+        public DllLoader(string dllPath) {
             Context = new HostAssemblyLoadContext();
             HotfixDll = Context.LoadFromAssemblyPath(dllPath);
         }
-
         public Assembly HotfixDll { get; }
-
         private HostAssemblyLoadContext Context { get; }
 
-        public WeakReference Unload()
-        {
+        public WeakReference Unload() {
             Context.Unload();
             return new WeakReference(Context);
         }
 
-        class HostAssemblyLoadContext : AssemblyLoadContext
-        {
+        class HostAssemblyLoadContext : AssemblyLoadContext {
             public HostAssemblyLoadContext() : base(true) { }
 
-            protected override Assembly Load(AssemblyName assemblyName)
-            {
+            protected override Assembly Load(AssemblyName assemblyName) {
                 return null;
             }
         }
-
     }
 }

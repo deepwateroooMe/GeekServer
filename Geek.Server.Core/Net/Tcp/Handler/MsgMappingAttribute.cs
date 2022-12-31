@@ -1,12 +1,10 @@
-﻿namespace Geek.Server.Core.Net.Tcp.Handler
-{
-    [AttributeUsage(AttributeTargets.Class)]
-    public class MsgMapping : Attribute
-    {
-        public Type Msg { get; }
+﻿namespace Geek.Server.Core.Net.Tcp.Handler {
 
-        public MsgMapping(Type msg)
-        {
+    [AttributeUsage(AttributeTargets.Class)]
+    public class MsgMapping : Attribute {
+
+        public Type Msg { get; }
+        public MsgMapping(Type msg) {
             Msg = msg;
         }
     }

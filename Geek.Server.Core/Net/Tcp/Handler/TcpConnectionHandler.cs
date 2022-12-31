@@ -2,52 +2,39 @@
 using Geek.Server.Core.Net.Tcp.Codecs;
 using Microsoft.AspNetCore.Connections;
 
-namespace Geek.Server.Core.Net.Tcp.Handler
-{
-    public class TcpConnectionHandler : ConnectionHandler
-    {
-        static readonly NLog.Logger LOGGER = NLog.LogManager.GetCurrentClassLogger();
+namespace Geek.Server.Core.Net.Tcp.Handler {
+    public class TcpConnectionHandler : ConnectionHandler {
 
+        static readonly NLog.Logger LOGGER = NLog.LogManager.GetCurrentClassLogger();
         public TcpConnectionHandler() { }
 
-        public override async Task OnConnectedAsync(ConnectionContext connection)
-        {
+        public override async Task OnConnectedAsync(ConnectionContext connection) {
             OnConnection(connection);
             var channel = new NetChannel(connection, new LengthPrefixedProtocol());
-            var remoteInfo = channel.Context.RemoteEndPoint;
-            while (!channel.IsClose())
-            {
-                try
-                {
+            var remoteInfo = channel.Context.RemoteEndPoint; // 远程连接的另一端
+            while (!channel.IsClose()) {
+                try {
                     var result = await channel.Reader.ReadAsync(channel.Protocol);
                     var message = result.Message;
-
                     if (result.IsCompleted)
                         break;
-
-                    _ = Dispatcher(channel, MsgDecoder.Decode(connection, message));
+                    _ = Dispatcher(channel, MsgDecoder.Decode(connection, message)); // 任务高度: 处理这次连接里的消息
                 }
-                catch (ConnectionResetException)
-                {
+                catch (ConnectionResetException) {
                     LOGGER.Info($"{remoteInfo} ConnectionReset...");
                     break;
                 }
-                catch (ConnectionAbortedException)
-                {
+                catch (ConnectionAbortedException) {
                     LOGGER.Info($"{remoteInfo} ConnectionAborted...");
                     break;
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     LOGGER.Error($"{remoteInfo} Exception:{e.Message}");
                 }
-
-                try
-                {
+                try {
                     channel.Reader.Advance();
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     LOGGER.Error($"{remoteInfo} channel.Reader.Advance Exception:{e.Message}");
                     break;
                 }
@@ -55,26 +42,20 @@ namespace Geek.Server.Core.Net.Tcp.Handler
             OnDisconnection(channel);
         }
 
-        protected virtual void OnConnection(ConnectionContext connection)
-        {
+        protected virtual void OnConnection(ConnectionContext connection) {
             LOGGER.Debug($"{connection.RemoteEndPoint?.ToString()} 链接成功");
         }
-
-        protected virtual void OnDisconnection(NetChannel channel)
-        {
+        protected virtual void OnDisconnection(NetChannel channel) {
             LOGGER.Debug($"{channel.Context.RemoteEndPoint?.ToString()} 断开链接");
         }
 
-        protected async Task Dispatcher(NetChannel channel, Message msg)
-        {
+        protected async Task Dispatcher(NetChannel channel, Message msg) {
             if (msg == null)
                 return;
-
-            //LOGGER.Debug($"-------------收到消息{msg.MsgId} {msg.GetType()}");
+            // LOGGER.Debug($"-------------收到消息{msg.MsgId} {msg.GetType()}");
             var handler = HotfixMgr.GetTcpHandler(msg.MsgId);
-            if (handler == null)
-            {
-                LOGGER.Error($"找不到[{msg.MsgId}][{msg.GetType()}]对应的handler");
+            if (handler == null) {
+                LOGGER.Error($"找不到[{msg.MsgId}][{msg.GetType()}]对应的handler"); // 找不到这种网络请求类型的回调Handler
                 return;
             }
             handler.Msg = msg;

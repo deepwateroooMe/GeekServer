@@ -6,64 +6,45 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 
-namespace Geek.Server.Core.Net.Tcp
-{
-    /// <summary>
-    /// TCP server
-    /// </summary>
-    public static class TcpServer
-    {
-        static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
-        static WebApplication app { get; set; }
+namespace Geek.Server.Core.Net.Tcp {
+    // TCP server
+    public static class TcpServer {
 
-        /// <summary>
-        /// 启动
-        /// </summary>
-        /// <param name="port"></param>
-        public static Task Start(int port)
-        {
+        static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
+
+        static WebApplication app { get; set; }
+        // 启动
+        public static Task Start(int port) {
             var builder = WebApplication.CreateBuilder();
-            builder.WebHost.UseKestrel(options =>
-            {
-                options.ListenAnyIP(port, builder =>
-                {
+            builder.WebHost.UseKestrel(options => {
+                options.ListenAnyIP(port, builder => {
                     builder.UseConnectionHandler<TcpConnectionHandler>();
                 });
             })
-            .ConfigureLogging(logging =>
-            {
+            .ConfigureLogging(logging => {
                 logging.SetMinimumLevel(LogLevel.Error);
             })
             .UseNLog();
-
             var app = builder.Build();
             return app.StartAsync();
         }
 
-        public static Task Start(int port, Action<ListenOptions> configure)
-        {
+        public static Task Start(int port, Action<ListenOptions> configure) {
             var builder = WebApplication.CreateBuilder();
-            builder.WebHost.UseKestrel(options =>
-            {
+            builder.WebHost.UseKestrel(options => {
                 options.ListenAnyIP(port, configure);
             })
-            .ConfigureLogging(logging =>
-            {
+            .ConfigureLogging(logging => {
                 logging.SetMinimumLevel(LogLevel.Error);
             })
             .UseNLog();
-
             app = builder.Build();
             return app.StartAsync();
         }
 
-        /// <summary>
-        /// 停止
-        /// </summary>
-        public static Task Stop()
-        {
-            if (app != null)
-            {
+        // 停止
+        public static Task Stop() {
+            if (app != null) {
                 Log.Info("停止Tcp服务...");
                 var task = app.StopAsync();
                 app = null;
