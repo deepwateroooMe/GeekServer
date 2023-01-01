@@ -1,12 +1,9 @@
-﻿
-using Geek.Server.Core.Events;
+﻿using Geek.Server.Core.Events;
+namespace Geek.Server.App.Common.Event {
 
-namespace Geek.Server.App.Common.Event
-{
-    public class EventAttribute : EventInfoAttribute
-    {
-        public EventAttribute(EventID eventId) : base((int)eventId)
-        {
+    public class EventAttribute : EventInfoAttribute {
+
+        public EventAttribute(EventID eventId) : base((int)eventId) {
         }
     }
 }

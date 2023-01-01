@@ -1,82 +1,48 @@
 ﻿using MessagePack;
 using System.Collections.Generic;
 
-namespace Geek.Server.Proto
-{
+// 这好像是另一套的什么 序列化 与 反序列化 的工具 ? 为的是 服务器,客户端,数据库 等,游戏所有的不同部件间的 无缝 无修改码 连接贯穿
+namespace Geek.Server.Proto {
 
-    /// <summary>
-    /// 请求背包数据
-    /// </summary>
+    // 请求背包数据
     [MessagePackObject(true)]
-    public class ReqBagInfo : Message
-    {
-    }
-
-    /// <summary>
-    /// 返回背包数据
-    /// </summary>
+    public class ReqBagInfo : Message {}
+    // 返回背包数据
     [MessagePackObject(true)]
-    public class ResBagInfo : Message
-    {
+    public class ResBagInfo : Message {
         public Dictionary<int, long> ItemDic { get; set; } = new Dictionary<int, long>();
     }
 
-    /// <summary>
-    /// 请求背包数据
-    /// </summary>
+    // 请求背包数据
     [MessagePackObject(true)]
-    public class ReqComposePet : Message
-    {
-        /// <summary>
-        /// 碎片id
-        /// </summary>
+    public class ReqComposePet : Message {
+        // 碎片id
         public int FragmentId { get; set; }
     }
 
-    /// <summary>
-    /// 返回背包数据
-    /// </summary>
+    // 返回背包数据
     [MessagePackObject(true)]
-    public class ResComposePet : Message
-    {
-        /// <summary>
-        /// 合成宠物的Id
-        /// </summary>
+    public class ResComposePet : Message {
+        // 合成宠物的Id
         public int PetId { get; set; }
     }
 
-
-    /// <summary>
-    /// 使用道具
-    /// </summary>
+    // 使用道具
     [MessagePackObject(true)]
-    public class ReqUseItem : Message
-    {
-        /// <summary>
-        /// 道具id
-        /// </summary>
+    public class ReqUseItem : Message {
+        // 道具id
         public int ItemId { get; set; }
     }
-
-    /// <summary>
-    /// 出售道具
-    /// </summary>
+    // 出售道具
     [MessagePackObject(true)]
-    public class ReqSellItem : Message
-    {
-        /// <summary>
-        /// 道具id
-        /// </summary>
+    public class ReqSellItem : Message {
+        // 道具id
         public int ItemId { get; set; }
     }
 
     [MessagePackObject(true)]
-    public class ResItemChange : Message
-    {
-        /// <summary>
-        /// 变化的道具
-        /// </summary>
+    public class ResItemChange : Message {
+        // 变化的道具
         public Dictionary<int, long> ItemDic { get; set; }
     }
-
 }

@@ -1,32 +1,19 @@
-﻿
-using Geek.Server.Core.Net.Tcp.Codecs;
+﻿using Geek.Server.Core.Net.Tcp.Codecs;
 
-namespace Geek.Server.App.Common.Session
-{
-    public class Session
-    {
-        /// <summary>
-        /// 全局标识符
-        /// </summary>
+namespace Geek.Server.App.Common.Session {
+
+    public class Session {
+
+        // 全局标识符
         public long Id { set; get; }
-
-        /// <summary>
-        /// 连接时间
-        /// </summary>
+        // 连接时间
         public DateTime Time { set; get; }
-
-        /// <summary>
-        /// 连接上下文
-        /// </summary>
+        // 连接上下文
         public NetChannel Channel { get; set; }
-
-        /// <summary>
-        /// 连接标示，避免自己顶自己的号,客户端每次启动游戏生成一次/或者每个设备一个
-        /// </summary>
+        // 连接标示，避免自己顶自己的号,客户端每次启动游戏生成一次/或者每个设备一个
         public string Sign { get; set; }
 
-        public void WriteAsync(Message msg)
-        {
+        public void WriteAsync(Message msg) {
             Channel?.WriteAsync(msg);
         }
     }

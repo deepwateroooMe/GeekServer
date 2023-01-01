@@ -4,36 +4,29 @@ using System.Diagnostics;
 using System.Text;
 using Geek.Server.Core.Utils;
 
-namespace Geek.Server.RemoteBackup
-{
-    internal class Program
-    {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+namespace Geek.Server.RemoteBackup {
 
+    internal class Program {
+
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static volatile bool ExitCalled = false;
         private static volatile Task GameLoopTask = null;
         private static volatile Task ShutDownTask = null;
 
-        static async Task Main(string[] args)
-        {
-            try
-            {
+        static async Task Main(string[] args) {
+            try {
                 AppExitHandler.Init(HandleExit);
                 GameLoopTask = StartUp.Enter();
                 await GameLoopTask;
                 if (ShutDownTask != null)
                     await ShutDownTask;
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 string error;
-                if (Settings.AppRunning)
-                {
+                if (Settings.AppRunning) {
                     error = $"服务器运行时异常 e:{e}";
                     Console.WriteLine(error);
-                }
-                else
-                {
+                } else {
                     error = $"启动服务器失败 e:{e}";
                     Console.WriteLine(error);
                 }
@@ -41,14 +34,12 @@ namespace Geek.Server.RemoteBackup
             }
         }
 
-        private static void HandleExit()
-        {
+        private static void HandleExit() {
             if (ExitCalled)
                 return;
             ExitCalled = true;
             Log.Info($"监听到退出程序消息");
-            ShutDownTask = Task.Run(() =>
-            {
+            ShutDownTask = Task.Run(() => {
                 Settings.AppRunning = false;
                 GameLoopTask?.Wait();
                 LogManager.Shutdown();
@@ -57,6 +48,5 @@ namespace Geek.Server.RemoteBackup
             });
             ShutDownTask.Wait();
         }
-
     }
 }
