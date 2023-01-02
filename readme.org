@@ -110,7 +110,7 @@ namespace Server.Logic.Common {
 - 有些是系统里的类和方法:比如下面的: 
 * IHost.cs
    
-[[./pic/readme_20230101_211909.png]]
+[[./pic/readme_20230101_222709.png]]
 - 这里,WebApplication的内部创建实现原理不是很懂
 
 * AppStartUp: 负责服务器的启动
