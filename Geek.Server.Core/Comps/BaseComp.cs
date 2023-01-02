@@ -5,12 +5,12 @@ using Geek.Server.Core.Hotfix.Agent;
 namespace Geek.Server.Core.Comps {
     public abstract class BaseComp {
 
-        private ICompAgent _cacheAgent = null;
-        private readonly object _cacheAgentLock = new();
+        private ICompAgent _cacheAgent = null;           // 工作人员 ?
+        private readonly object _cacheAgentLock = new(); // 锁
 
         public ICompAgent GetAgent(Type refAssemblyType = null) {
-            lock (_cacheAgentLock) {
-                if (_cacheAgent != null && !HotfixMgr.DoingHotfix)
+            lock (_cacheAgentLock) { // 锁上, 多线程安全
+                if (_cacheAgent != null && !HotfixMgr.DoingHotfix) // 非空,非正在热更新
                     return _cacheAgent;
                 var agent = HotfixMgr.GetAgent<ICompAgent>(this, refAssemblyType);
                 _cacheAgent = agent;

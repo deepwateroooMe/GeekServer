@@ -4,11 +4,12 @@ using NLog;
 
 namespace Geek.Server.Core.Actors.Impl {
     // 判断Actor交叉死锁
-    public static class ActorLimit {
+    public static class ActorLimit { // Actor的规则,限制条件等
 
         interface IRule {
             bool AllowCall(long target);
         }
+        
         // 可以按需扩展检查规则
         public enum RuleType {
             None,
@@ -22,7 +23,7 @@ namespace Geek.Server.Core.Actors.Impl {
         private static IRule rule;
         private static readonly Dictionary<ActorType, int> levelDic = new();
 
-        public static void Init(RuleType type) {
+        public static void Init(RuleType type) {　// 根据两种不同规则的初始化：服务器端的消息管理发送机制(比如不同规则)
             switch (type) {
             case RuleType.ByLevel:
                 rule = new ByLevelRule();
@@ -52,6 +53,7 @@ namespace Geek.Server.Core.Actors.Impl {
             return true;
         }
 
+// 接口类的两种不同实现        
 #region ByLevelRule
         class ByLevelRule : IRule {
             public bool AllowCall(long target) {
@@ -73,6 +75,7 @@ namespace Geek.Server.Core.Actors.Impl {
             }
         }
 #endregion
+        
 #region NoBidirectionCallRule
         class NoBidirectionCallRule : IRule {
             internal readonly ConcurrentDictionary<long, ConcurrentDictionary<long, bool>> CrossDic = new();

@@ -13,21 +13,26 @@ using PolymorphicMessagePack;
 namespace Server.Logic.Common {
 
     internal class HotfixBridge : IHotfixBridge {
+        private const string TAG = "HotfixBridge";
 
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public ServerType BridgeType => ServerType.Game;
 
-        public async Task<bool> OnLoadSuccess(bool reload) {
+        public async Task<bool> OnLoadSuccess(bool reload) { // 当程序集启动完成之后 的回调
+            Console.WriteLine(TAG + "OnLoadSuccess() reload = " + reload);
             if (reload) {
                 ActorMgr.ClearAgent();
                 return true;
             }
             PolymorphicTypeMapper.Register(this.GetType().Assembly);
             HotfixMgr.SetMsgGetter(MsgFactory.GetType);
+
             // await TcpServer.Start(Settings.TcpPort);
             await TcpServer.Start(Settings.TcpPort, builder => builder.UseConnectionHandler<AppTcpConnectionHandler>());
             Log.Info("tcp 服务启动完成...");
+
             await HttpServer.Start(Settings.HttpPort);
+
             Log.Info("load config data");
             (bool success, string msg) = GameDataManager.ReloadAll();
             if (!success)

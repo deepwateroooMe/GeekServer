@@ -9,12 +9,14 @@ using NLog.Web;
 namespace Geek.Server.Core.Net.Tcp {
     // TCP server
     public static class TcpServer {
+        private const string TAG = "TcpServer";
 
         static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
 
         static WebApplication app { get; set; }
         // 启动
         public static Task Start(int port) {
+            Console.WriteLine(TAG + " Start()");
             var builder = WebApplication.CreateBuilder();
             builder.WebHost.UseKestrel(options => {
                 options.ListenAnyIP(port, builder => {
@@ -26,7 +28,7 @@ namespace Geek.Server.Core.Net.Tcp {
             })
             .UseNLog();
             var app = builder.Build();
-            return app.StartAsync();
+            return app.StartAsync(); // <<<<<<<<<<<<<<<<<<<< 这内部的原理不懂
         }
 
         public static Task Start(int port, Action<ListenOptions> configure) {

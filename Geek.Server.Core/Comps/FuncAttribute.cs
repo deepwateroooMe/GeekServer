@@ -1,13 +1,10 @@
-﻿namespace Geek.Server.Core.Comps
-{
+﻿namespace Geek.Server.Core.Comps {
 
     [AttributeUsage(AttributeTargets.Class)]
-    public class FuncAttribute : Attribute
-    {
-        public short func;
+    public class FuncAttribute : Attribute {
 
-        public FuncAttribute(short func)
-        {
+        public short func;
+        public FuncAttribute(short func) {
             this.func = func;
         }
     }

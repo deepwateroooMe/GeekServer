@@ -9,7 +9,7 @@ namespace PolymorphicMessagePack {
     public sealed class PolymorphicResolver : IFormatterResolver {
 
         static IFormatterResolver InnerResolver;
-        static List<IFormatterResolver> innerResolver = new() {
+        static List<IFormatterResolver> innerResolver = new() { // <<<<<<<<<<<<<<<<<<<<  是个链表
             BuiltinResolver.Instance,
             StandardResolver.Instance,
             ContractlessStandardResolver.Instance
@@ -22,9 +22,9 @@ namespace PolymorphicMessagePack {
             }
         }
 
-        public static void Init() {
+        public static void Init() { // 必要的初始化
             PolymorphicTypeMapper.RegisterCore();
-            StaticCompositeResolver.Instance.Register(innerResolver.ToArray());
+            StaticCompositeResolver.Instance.Register(innerResolver.ToArray()); // <<<<<<<<<< 转化为数组　
             InnerResolver = StaticCompositeResolver.Instance;
             MessagePackSerializer.DefaultOptions = new MessagePackSerializerOptions(new PolymorphicResolver());
         }

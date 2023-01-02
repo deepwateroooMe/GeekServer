@@ -79,15 +79,15 @@ namespace Geek.Server.Core.Hotfix {
                 }
             }
         }
-        private void LoadRefAssemblies() { // 加载相应的程序集
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var nameSet = new HashSet<string>(assemblies.Select(t => t.GetName().Name));
-            var hotfixRefAssemblies = HotfixAssembly.GetReferencedAssemblies();
-            foreach (var refAssembly in hotfixRefAssemblies) {
-                if (nameSet.Contains(refAssembly.Name))
+        private void LoadRefAssemblies() { // 加载索引 reference 程序集
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies(); // Assembly []
+            var nameSet = new HashSet<string>(assemblies.Select(t => t.GetName().Name)); // [] ==> set
+            var hotfixRefAssemblies = HotfixAssembly.GetReferencedAssemblies(); // AssemblyName []
+			foreach (var refAssembly in hotfixRefAssemblies) {
+                if (nameSet.Contains(refAssembly.Name)) // 已经加载过了
                     continue;
                 var refPath = $"{Environment.CurrentDirectory}/{refAssembly.Name}.dll";
-                if (File.Exists(refPath))
+                if (File.Exists(refPath)) // 索引存在,物理文件存在,就再加载一遍索引的 assembly.dll
                     Assembly.LoadFrom(refPath);
             }
         }
@@ -96,9 +96,10 @@ namespace Geek.Server.Core.Hotfix {
                 if (!AddAgent(type)
                     && !AddEvent(type)
                     && !AddTcpHandler(type)
-                    && !AddHttpHandler(type)) { // 不是上述四种类型:　
+                    && !AddHttpHandler(type)) {
+// 不是上述四种类型:　
                     if ((HotfixBridge == null && type.GetInterface(typeof(IHotfixBridge).FullName) != null)) { // 判断确为 IHotfixBridge, 创建.....相应的 程序集回调管理实现类 ?
-                        var bridge = (IHotfixBridge)Activator.CreateInstance(type);
+                        var bridge = (IHotfixBridge)Activator.CreateInstance(type); // 加载程序集 相关回调管理 接口 与 实现, 创建了一个实例
                         if (bridge.BridgeType == Settings.ServerType)
                             HotfixBridge = bridge;
                     }
@@ -107,7 +108,7 @@ namespace Geek.Server.Core.Hotfix {
         }
 // HttpHandler + TcpHandler        
         private bool AddHttpHandler(Type type) {
-            if (!type.IsSubclassOf(typeof(BaseHttpHandler)))
+            if (!type.IsSubclassOf(typeof(BaseHttpHandler))) // <<<<<<<<<< BaseHttpHandler
                 return false;
             var attr = (HttpMsgMapping)type.GetCustomAttribute(typeof(HttpMsgMapping));
             if (attr == null) {
@@ -122,10 +123,11 @@ namespace Geek.Server.Core.Hotfix {
         }
         public const string KEY = "MsgID";
         private bool AddTcpHandler(Type type) {
-            var attribute = (MsgMapping)type.GetCustomAttribute(typeof(MsgMapping), true);
+            var attribute = (MsgMapping)type.GetCustomAttribute(typeof(MsgMapping), true);           // <<<<<<<<<< TcpHandler
             if (attribute == null) return false;
-            var msgIdField = attribute.Msg.GetField(KEY, BindingFlags.Static | BindingFlags.Public);
+            var msgIdField = attribute.Msg.GetField(KEY, BindingFlags.Static | BindingFlags.Public); // <<<<<<<<<< TcpHandler
             if (msgIdField == null) return false;
+            
             int msgId = (int)msgIdField.GetValue(null);
             if (!tcpHandlerMap.ContainsKey(msgId)) {
                 tcpHandlerMap.Add(msgId, type);
@@ -136,7 +138,7 @@ namespace Geek.Server.Core.Hotfix {
         }
 
         private bool AddEvent(Type type) {
-            if (!type.IsImplWithInterface(typeof(IEventListener)))
+            if (!type.IsImplWithInterface(typeof(IEventListener))) // <<<<<<<<<< IEventListener
                 return false;
             var compAgentType = type.BaseType.GetGenericArguments()[0];
             var compType = compAgentType.BaseType.GetGenericArguments()[0];
@@ -157,7 +159,7 @@ namespace Geek.Server.Core.Hotfix {
             return true;
         }
         private bool AddAgent(Type type) {
-            if (!type.IsImplWithInterface(typeof(ICompAgent)))
+            if (!type.IsImplWithInterface(typeof(ICompAgent))) // <<<<<<<<<< ICompAgent
                 return false;
             if (type.FullName.StartsWith("Wrapper.Agent.") && type.FullName.EndsWith("Wrapper")) {
                 agentAgentWrapperMap[type.BaseType] = type;
@@ -194,7 +196,7 @@ namespace Geek.Server.Core.Hotfix {
 
         internal T GetAgent<T>(BaseComp comp) where T : ICompAgent {
             var agentType = compAgentMap[comp.GetType()];
-            var agent = (T)Activator.CreateInstance(useAgentWrapper ? agentAgentWrapperMap[agentType] : agentType);
+            var agent = (T)Activator.CreateInstance(useAgentWrapper ? agentAgentWrapperMap[agentType] : agentType); // 生产一个新的
             agent.Owner = comp;
             return agent;
         }

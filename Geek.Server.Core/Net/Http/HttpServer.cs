@@ -31,7 +31,7 @@ namespace Geek.Server.Core.Net.Http {
 // 这下面两行没看懂:　            
             app.MapGet("/game/{text}", (HttpContext context) => HttpHandler.HandleRequest(context));
             app.MapPost("/game/{text}", (HttpContext context) => HttpHandler.HandleRequest(context));
-            return app.StartAsync();
+            return app.StartAsync(); // <<<<<<<<<<<<<<<<<<<< 
         }
         // 停止
         public static Task Stop() {

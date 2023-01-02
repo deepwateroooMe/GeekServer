@@ -1,29 +1,21 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Geek.Server.Core.Storage
-{
-    public static class FileBackup
-    {
+namespace Geek.Server.Core.Storage {
+
+    public static class FileBackup {
         private static readonly NLog.Logger LOGGER = NLog.LogManager.GetCurrentClassLogger();
 
-        public static FileBackupStatus CheckRestoreFromFile()
-        {
+        public static FileBackupStatus CheckRestoreFromFile() {
             var folder = Environment.CurrentDirectory + "/../State/";
-            if (Directory.Exists(folder))
-            {
+            if (Directory.Exists(folder)) {
                 LOGGER.Warn("need restore...");
-
-                try
-                {
+                try {
                     var curDataBase = GameDB.As<MongoDBConnection>().CurDB;
                     var root = new DirectoryInfo(folder);
-                    foreach (var dir in root.GetDirectories())
-                    {
-                        foreach (var jsonDir in dir.GetDirectories())
-                        {
-                            foreach (var file in jsonDir.GetFiles())
-                            {
+                    foreach (var dir in root.GetDirectories()) {
+                        foreach (var jsonDir in dir.GetDirectories()) {
+                            foreach (var file in jsonDir.GetFiles()) {
                                 var batchList = new List<ReplaceOneModel<BsonDocument>>();
                                 var col = curDataBase.GetCollection<BsonDocument>(jsonDir.Name);
                                 var fileStr = File.ReadAllText(file.FullName);
@@ -31,42 +23,35 @@ namespace Geek.Server.Core.Storage
                                 var filter = Builders<BsonDocument>.Filter.Eq(CacheState.UniqueId, bsonElements.GetValue(CacheState.UniqueId));
                                 var ret = new ReplaceOneModel<BsonDocument>(filter, bsonElements) { IsUpsert = true };
                                 batchList.Add(ret);
-                                //保存数据
+                                // 保存数据
                                 var result = col.BulkWrite(batchList);
-                                if (!result.IsAcknowledged)
-                                {
+                                if (!result.IsAcknowledged) {
                                     LOGGER.Warn($"restore {jsonDir.Name} fail");
                                     return FileBackupStatus.StoreToDbFailed;
                                 }
                             }
                         }
                     }
-                    //删除目录文件夹
+                    // 删除目录文件夹
                     var destDir = Environment.CurrentDirectory + $"/../State_Back";
                     destDir.CreateAsDirectory();
                     Directory.Move(folder, $"{destDir}/{DateTime.Now:yyyy-MM-dd-HH-mm}");
-
                     return FileBackupStatus.StoreToDbSuccess;
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     LOGGER.Fatal(e.ToString());
-                    //回存数据失败 不予启服
+                    // 回存数据失败 不予启服
                     return FileBackupStatus.StoreToDbFailed;
                 }
-            }
-            else
-            {
+            } else {
                 return FileBackupStatus.NoFile;
             }
         }
 
-        internal static async Task SaveToFile(List<ReplaceOneModel<MongoState>> list, string stateName)
-        {
+        internal static async Task SaveToFile(List<ReplaceOneModel<MongoState>> list, string stateName) {
             var folder = Environment.CurrentDirectory + $"/../State/{DateTime.Now:yyyy-MM-dd-HH-mm}/{stateName}/";
             folder.CreateAsDirectory();
-            foreach (var one in list)
-            {
+            foreach (var one in list) {
                 var state = one.Replacement;
                 Newtonsoft.Json.JsonConvert.SerializeObject(state);
                 var str = Newtonsoft.Json.JsonConvert.SerializeObject(state);
@@ -76,9 +61,7 @@ namespace Geek.Server.Core.Storage
         }
     }
 
-
-    public enum FileBackupStatus
-    {
+    public enum FileBackupStatus {
         NoFile,
         StoreToDbFailed,
         StoreToDbSuccess,

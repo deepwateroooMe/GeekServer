@@ -8,7 +8,9 @@ using NLog;
 
 namespace Geek.Server.Config {
 
+// 这个类,客户端游戏源码里也有一个定义,不知道这个,是否是由客户端返回来的配置?    
     public class GameDataManager {
+        private const string TAG = "GameDataManager";
         private static readonly NLog.Logger LOGGER = LogManager.GetCurrentClassLogger();
         
         public DateTime ReloadTime { get; private set; }

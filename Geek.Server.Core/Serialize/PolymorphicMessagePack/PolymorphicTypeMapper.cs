@@ -30,16 +30,16 @@ namespace PolymorphicMessagePack {
             Register(typeof(T));
         }
         public static void Register(Type type) {
-            var id = (int)MurmurHash3.Hash(type.FullName);
+            var id = (int)MurmurHash3.Hash(type.FullName); // 保存的时候,有个转化:　hash的是某种算法计算出来的hash值，应该是保存读取的效率更高一点儿
             if (IdToType.TryGetValue(id, out var t)) {
                 if (t.FullName != type.FullName) {
                     Log.Error($"typemapper注册错误,不同类型,id相同{t.FullName}  {type.FullName}");
                 }
             }
-            IdToType[id] = type;
+            IdToType[id] = type;　// 总是成对字典保存的
             TypeToId[type] = id;
         }
-        public static void Register(Assembly assembly) {
+        public static void Register(Assembly assembly) { // 注册程序域里的相关必要类型: 是类,非密封,非抽象,非泛型类?,不包含<>,非属性子类,非标注为忽略的
             var types = from h in assembly.GetTypes()
                 where h.IsClass && !(h.IsSealed && h.IsAbstract) && !h.ContainsGenericParameters && !h.FullName.Contains("<") && !h.IsSubclassOf(typeof(Attribute)) && h.GetCustomAttribute<PolymorphicIgnore>() == null
                 select h;

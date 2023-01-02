@@ -9,6 +9,7 @@ using Geek.Server.Core.Net.Tcp.Handler;
 
 namespace Geek.Server.Core.Hotfix {
     public class HotfixMgr {
+        private const string TAG = "HotfixMgr";
 
         internal static volatile bool DoingHotfix = false;
 
@@ -19,22 +20,23 @@ namespace Geek.Server.Core.Hotfix {
         public static DateTime ReloadTime { get; private set; }
 
         public static async Task<bool> LoadHotfixModule(string dllVersion = "") {
-// 这里是更新服务器的源码吗?             
+// 这里是更新服务器的源码吗? 应该是更新 游戏客户端 的源码 ? 下面的文件还没有找到            
             var dllPath = Path.Combine(Environment.CurrentDirectory, string.IsNullOrEmpty(dllVersion) ? "hotfix/Geek.Server.Hotfix.dll" : $"{dllVersion}/Geek.Server.Hotfix.dll");
             var newModule = new HotfixModule(dllPath);
             bool reload = module != null;
+            Console.WriteLine("LoadHotfixModule: reload = " + reload);
             // 起服时失败会有异常抛出
-            var success = newModule.Init(reload);
+            var success = newModule.Init(reload); // <<<<<<<<<<<<<<<<<<<< 
             if (!success)
                 return false;
-            return await Load(newModule, reload);
+            return await Load(newModule, reload); // <<<<<<<<<<<<<<<<<<<< 这里看丢了
         }
 
         public static Task<bool> LoadSelfModule() {
             return Load(new HotfixModule(), false);
         }
 
-        private static async Task<bool> Load(HotfixModule newModule, bool reload) {
+        private static async Task<bool> Load(HotfixModule newModule, bool reload) { // <<<<<<<<<<<<<<<<<<<< 这里看丢了
             ReloadTime = DateTime.Now;
             if (reload) {
                 var oldModule = module;
@@ -48,7 +50,8 @@ namespace Geek.Server.Core.Hotfix {
                     DoingHotfix = !oldModuleMap.IsEmpty;
                 });
             }
-            module = newModule;
+            module = newModule; // <<<<<<<<<<<<<<<<<<<< 这里是同仁的地方
+            Console.WriteLine(TAG + " (module.HotfixBridge != null) = " + (module.HotfixBridge != null)); // true
             if (module.HotfixBridge != null)
                 return await module.HotfixBridge.OnLoadSuccess(reload);
             return true;
@@ -70,10 +73,10 @@ namespace Geek.Server.Core.Hotfix {
                 var asb2 = refAssemblyType?.Assembly;
                 foreach (var kv in oldModuleMap) {
                     var old = kv.Value;
-                    if (asb == old.HotfixAssembly || asb2 == old.HotfixAssembly)
+                    if (asb == old.HotfixAssembly || asb2 == old.HotfixAssembly) // 
                         return old.GetAgent<T>(comp);
                 }
-            }
+            } // 如果现有,且合适,就返回一下;否则,生产一个新的
             return module.GetAgent<T>(comp);
         }
 
