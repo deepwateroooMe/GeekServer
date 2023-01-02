@@ -1,4 +1,4 @@
-﻿using Geek.Client;
+using Geek.Client;
 using Geek.Client.Config;
 using Geek.Server;
 using Geek.Server.Proto;
@@ -9,11 +9,13 @@ using UnityEngine.UI;
 namespace Logic {
 
     public class GameMain : MonoBehaviour {
+        private const string TAG = "GameMain";
         public static GameMain Singleton = null;
 
-        public Text Txt;
         public string serverIp = "127.0.0.1";
         public int serverPort = 8899;
+
+        public Text Txt;
         public string userName = "123456";
 
         private void Awake() {
@@ -25,15 +27,16 @@ namespace Logic {
             GameDataManager.ReloadAll();
             GameClient.Singleton.Init();
             DemoService.Singleton.RegisterEventListener();
-            await ConnectServer();
-            await Login();
-            await ReqBagInfo();
-            await ReqComposePet();
+// 异步顺序执行的步骤: 写得好像流水
+            await ConnectServer(); // 专员等待　异步结果
+            await Login();         // 专员等待　异步结果
+            await ReqBagInfo();    // 专员等待　异步结果
+            await ReqComposePet(); // 专员等待　异步结果
         }
 
         private async Task ConnectServer() {
             _ = GameClient.Singleton.Connect(serverIp, serverPort);
-            await MsgWaiter.StartWait(GameClient.ConnectEvt);
+            await MsgWaiter.StartWait(GameClient.ConnectEvt); // 这里等的是　这个接口里所定义过的　所有感兴趣的事件.当客户端退出的时候，这里还没弄清楚
         }
 
         private Task Login() {

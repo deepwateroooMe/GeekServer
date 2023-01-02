@@ -6,10 +6,8 @@ using NLog.Web;
 
 namespace Geek.Server.Core.Net.Http {
     public static class HttpServer {
-
         static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         static WebApplication app { get; set; }
-
         // 启动
         public static Task Start(int httpPort, int httpsPort = 0) {
             var builder = WebApplication.CreateBuilder(); // 创建一个实例

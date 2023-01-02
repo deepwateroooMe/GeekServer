@@ -1,16 +1,12 @@
 ﻿using System;
 
-namespace Bedrock.Framework
-{
-    public class ConnectTimeoutException : Exception
-    {
-        public ConnectTimeoutException(string message)
-            : base(message)
-        {
-        }
+namespace Bedrock.Framework {
 
-        public ConnectTimeoutException()
-        {
+    public class ConnectTimeoutException : Exception {
+
+        public ConnectTimeoutException(string message) : base(message) {
+        }
+        public ConnectTimeoutException() {
         }
     }
 }

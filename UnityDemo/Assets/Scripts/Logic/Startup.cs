@@ -8,7 +8,8 @@ namespace Logic {
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Initialize() {
-            PolymorphicRegister.Load();
+
+            PolymorphicRegister.Load(); // 客户端同样先初始化/加载 热更新 程序集
             new GameObject("GameMain").AddComponent<GameMain>();
         }
     }

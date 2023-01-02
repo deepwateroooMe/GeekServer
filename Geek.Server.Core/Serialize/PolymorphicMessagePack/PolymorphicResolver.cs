@@ -34,7 +34,7 @@ namespace PolymorphicMessagePack {
             if (PolymorphicTypeMapper.Contains(typeof(T))) {
                 return FormatterCache<T>.Formatter;
             }
-            return InnerResolver.GetFormatter<T>();
+            return InnerResolver.GetFormatter<T>(); // 
         }
 
         // Bottleneck

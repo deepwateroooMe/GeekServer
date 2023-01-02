@@ -1,4 +1,4 @@
-% Created 2023-01-01 Sun 21:59
+% Created 2023-01-02 Mon 11:27
 \documentclass[9pt, b5paper]{article}
 \usepackage{xeCJK}
 \usepackage{minted}
@@ -45,46 +45,158 @@
 \begin{minted}[fontsize=\scriptsize,linenos=false]{text}
 init NLog config...
 ***PolymorphicRegister Init***
-2023-01-01 16:43:40.5013 INFO  launch embedded db...
-2023-01-01 16:43:41.5346 INFO  regist comps...
-2023-01-01 16:43:41.5346 INFO  初始化组件注册完成
-2023-01-01 16:43:41.5501 INFO  load hotfix module
-2023-01-01 16:43:41.5875 INFO  hotfix dll init success: F:\unityGamesExamples\GeekServer\bin\app_debug\hotfix/Geek.Server.Hotfix.dll 热更新文件地址,可以找到
+ INFO  launch embedded db...
+ INFO  regist comps...
+ INFO  初始化组件注册完成
+ INFO  load hotfix module
+LoadHotfixModule: reload = False
+ INFO  hotfix dll init success: F:\unityGamesExamples\GeekServer\bin\app_debug\hotfix/Geek.Server.Hotfix.dll
+HotfixMgr (module.HotfixBridge != null) = True
 
 // <<<<<<<<<< 我找不到下面这些是从哪里来,不知道是不是什么第三方库的.dll程序集里出来的,又或者是数据库 ? .NET Core WEB ?
 
 // 感觉这是 TcpServer WebApplication创建时,内部生成的, 其内部创建实现原理不是很懂
-2023-01-01 16:43:42.0173 DEBUG  Hosting starting 
-2023-01-01 16:43:42.1014 INFO  Now listening on: http://[::]:8899
-2023-01-01 16:43:42.1014 DEBUG  Loaded hosting startup assembly Geek.Server.App
-2023-01-01 16:43:42.1014 INFO  Application started. Press Ctrl+C to shut down.
-2023-01-01 16:43:42.1014 INFO  Hosting environment: Production
-2023-01-01 16:43:42.1014 INFO  Content root path: F:\unityGamesExamples\GeekServer\bin\app_debug\
-2023-01-01 16:43:42.1014 DEBUG  Hosting started
-2023-01-01 16:43:42.1014 INFO  tcp 服务启动完成... 这里,这一行可以找到
+ DEBUG  Hosting starting
+ INFO  Now listening on: http://[::]:8899
+ DEBUG  Loaded hosting startup assembly Geek.Server.App
+ INFO  Application started. Press Ctrl+C to shut down.
+ INFO  Hosting environment: Production
+ INFO  Content root path: F:\unityGamesExamples\GeekServer\bin\app_debug\
+ DEBUG  Hosting started
+ INFO  tcp 服务启动完成... 这里,这一行可以找到
+HotfixBridge tcp 服务启动完成...
 
 // 感觉这是 HttpServer WebApplication创建时,内部生成的, 其内部创建实现原理不是很懂
-2023-01-01 16:43:42.1179 DEBUG  Hosting starting
-2023-01-01 16:43:42.1236 INFO  Now listening on: http://[::]:20000
-2023-01-01 16:43:42.1236 DEBUG  Loaded hosting startup assembly Geek.Server.App
-2023-01-01 16:43:42.1236 INFO  Application started. Press Ctrl+C to shut down.
-2023-01-01 16:43:42.1236 INFO  Hosting environment: Production
-2023-01-01 16:43:42.1236 INFO  Content root path: F:\unityGamesExamples\GeekServer\bin\app_debug\
-2023-01-01 16:43:42.1236 DEBUG  Hosting started 
+ DEBUG  Hosting starting
+ INFO  Now listening on: http://[::]:20000
+ DEBUG  Loaded hosting startup assembly Geek.Server.App
+ INFO  Application started. Press Ctrl+C to shut down.
+ INFO  Hosting environment: Production
+ INFO  Content root path: F:\unityGamesExamples\GeekServer\bin\app_debug\
+ DEBUG  Hosting started
 
-2023-01-01 16:43:42.1236 INFO  load config data // <<<<<<<<<< 这里可以找到
-2023-01-01 16:43:42.2685 INFO  初始化全局定时完成
-2023-01-01 16:43:42.2685 INFO  激活全局Actor: Server
-2023-01-01 16:43:42.2685 INFO  下次定时回存时间 1/1/2023 4:45:05 PM
-2023-01-01 16:43:42.2879 INFO  激活全局组件并检测组件是否都包含Agent实现完成
+ INFO  load config data
+ INFO  初始化全局定时完成
+ INFO  下次定时回存时间 1/2/2023 11:10:09 AM
+ INFO  激活全局Actor: Server
+ INFO  激活全局组件并检测组件是否都包含Agent实现完成
 
-2023-01-01 16:43:42.2879 INFO  进入游戏主循环...
-***进入游戏主循环***
+ INFO  进入游戏主循环...
+        ***进入游戏主循环***
 
 // 下面这两行日志好像又找不到了
-2023-01-01 16:43:43.6000 DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
-2023-01-01 16:43:45.5580 DEBUG  ServerCompAgent.TestDelayTimer.延时3秒执行.执行一次
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestDelayTimer.延时3秒执行.执行一次
+ DEBUG  Connection id "0HMNCUJ22HQ5P" accepted.
+ DEBUG  Connection id "0HMNCUJ22HQ5P" started.
+ DEBUG  [::ffff:127.0.0.1]:62275 链接成功
+ DEBUG  PetCompAgent.OnGotNewPet监听到了获得宠物的事件,宠物ID:1000当前世界等级:1
+
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ INFO  定时回存完成 耗时: 6.4955ms
+ INFO  下次定时回存时间 1/2/2023 11:15:09 AM
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+ INFO  定时回存完成 耗时: 0.0761ms
+ INFO  下次定时回存时间 1/2/2023 11:20:09 AM
+
+// 当客户端断开连接之后
+ DEBUG  Connection id "0HMNCUJ22HQ5P" received FIN.
+ DEBUG  [::ffff:127.0.0.1]:62275 断开链接
+ DEBUG  Connection id "0HMNCUJ22HQ5P" stopped.
+ DEBUG  Connection id "0HMNCUJ22HQ5P" sending FIN because: "The Socket transport's send loop completed gracefully."
+ DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
+
+// 当服务端关掉之后
+F:\unityGamesExamples\GeekServer\bin\app_debug\Geek.Server.App.exe (process 13744) exited with code -1.
+To automatically close the console when debugging stops, enable Tools->Options->Debugging->Automatically close the console when debugging stops.
+Press any key to close this window . . .　
 \end{minted}
+\begin{itemize}
+\item unity游戏客户端的部分
+\end{itemize}
+
+\includegraphics[width=.9\linewidth]{./pic/readme_20230102_111227.png}
+
+\begin{minted}[fontsize=\scriptsize,linenos=false]{tex}
+GameClient Init Success in UnityEngine.UnitySynchronizationContext
+UnityEngine.Debug:Log (object)
+Geek.Client.GameClient:Init () (at Assets/Scripts/Framework/Net/GameClient.cs:33)
+Logic.GameMain/<Start>d__7:MoveNext () (at Assets/Scripts/Logic/GameMain.cs:28)
+
+Connected to 127.0.0.1:62275
+UnityEngine.Debug:Log (object)
+Geek.Client.GameClient/<Connect>d__23:MoveNext () (at Assets/Scripts/Framework/Net/GameClient.cs:60)
+UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
+
+-------OnConnectServer-->>>Success
+UnityEngine.Debug:Log (object)
+Logic.DemoService:OnConnectServer (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:83)
+
+连接服务器成功!
+UnityEngine.Debug:Log (object)
+Logic.DemoService:OnConnectServer (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:86)
+
+deal msg:785960738>Geek.Server.Proto.ResLogin
+UnityEngine.Debug:Log (object)
+Logic.DemoService:GetCurMsg<Geek.Server.Proto.ResLogin> (int) (at Assets/Scripts/Logic/DemoService.cs:51)
+
+2168:登录成功!
+UnityEngine.Debug:Log (object)
+Logic.DemoService:OnResLogin (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:99)
+
+deal msg:1179199001>Geek.Server.Proto.ResErrorCode
+UnityEngine.Debug:Log (object)
+Logic.DemoService:GetCurMsg<Geek.Server.Proto.ResErrorCode> (int) (at Assets/Scripts/Logic/DemoService.cs:51)
+
+deal msg:-1872884227>Geek.Server.Proto.ResBagInfo
+UnityEngine.Debug:Log (object)
+Logic.DemoService:GetCurMsg<Geek.Server.Proto.ResBagInfo> (int) (at Assets/Scripts/Logic/DemoService.cs:51)
+
+收到背包数据:101:1,103:100,
+UnityEngine.Debug:Log (object)
+Logic.DemoService:OnResBagInfo (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:110)
+
+deal msg:1179199001>Geek.Server.Proto.ResErrorCode
+UnityEngine.Debug:Log (object)
+Logic.DemoService:GetCurMsg<Geek.Server.Proto.ResErrorCode> (int) (at Assets/Scripts/Logic/DemoService.cs:51)
+
+deal msg:750865816>Geek.Server.Proto.ResComposePet
+UnityEngine.Debug:Log (object)
+Logic.DemoService:GetCurMsg<Geek.Server.Proto.ResComposePet> (int) (at Assets/Scripts/Logic/DemoService.cs:51)
+
+合成宠物成功1000
+UnityEngine.Debug:Log (object)
+Logic.DemoService:OnResComposePet (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:116)
+
+deal msg:1179199001>Geek.Server.Proto.ResErrorCode
+UnityEngine.Debug:Log (object)
+Logic.DemoService:GetCurMsg<Geek.Server.Proto.ResErrorCode> (int) (at Assets/Scripts/Logic/DemoService.cs:51)
+
+OnApplicationQuit
+UnityEngine.Debug:Log (object)
+Logic.GameMain:OnApplicationQuit () (at Assets/Scripts/Logic/GameMain.cs:70)
+
+127.0.0.1:8899 服务器断开链接
+UnityEngine.Debug:Log (object)
+Geek.Client.NetChannel:ConnectionClosed () (at Assets/Scripts/Framework/Net/NetChannel.cs:26)
+Geek.Client.ClientNetChannel:ConnectionClosed () (at Assets/Scripts/Framework/Net/ClientNetChannel.cs:19)
+
+与服务器断开!
+UnityEngine.Debug:Log (object)
+Logic.DemoService:OnDisconnectServer (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:94)
+\end{minted}
+
 \begin{itemize}
 \item 这里分两块初始化的代码主要来自于服务器热更新中的代码:
 \end{itemize}
@@ -238,5 +350,115 @@ internal class AppStartUp {
   "MongoDBName": "geek_server"
 }
 \end{minted}
+
+\section{TaskCompletionSource.cs}
+\label{sec-6}
+\begin{minted}[fontsize=\scriptsize,linenos=false]{csharp}
+namespace System.Threading.Tasks
+{
+    public class TaskCompletionSource<TResult>
+    {
+        public TaskCompletionSource();
+        public TaskCompletionSource(object state);
+        public TaskCompletionSource(TaskCreationOptions creationOptions);
+        public TaskCompletionSource(object state, TaskCreationOptions creationOptions);
+
+        public Task<TResult> Task { get; }
+
+        public void SetCanceled();
+        public void SetException(IEnumerable<Exception> exceptions);
+        public void SetException(Exception exception);
+        public void SetResult(TResult result);
+        public bool TrySetCanceled();
+        public bool TrySetCanceled(CancellationToken cancellationToken);
+        public bool TrySetException(IEnumerable<Exception> exceptions);
+        public bool TrySetException(Exception exception);
+        public bool TrySetResult(TResult result);
+    }
+}
+\end{minted}
+\section{GameClient.cs}
+\label{sec-7}
+\begin{itemize}
+\item 与远程服务器连接的部分
+\end{itemize}
+\begin{minted}[fontsize=\scriptsize,linenos=false]{csharp}
+public int Port { private set; get; }
+public string Host { private set; get; }
+public const int ConnectEvt = 101; // 连接事件
+public const int DisconnectEvt = 102; // 连接断开
+
+public async Task<ClientNetChannel> Connect(string host, int port) {
+    Host = host;
+    Port = port;
+    try {
+        var connection = await ClientFactory.ConnectAsync(new IPEndPoint(IPAddress.Parse(Host), Port)); // 异步连接
+        UnityEngine.Debug.Log($"Connected to {connection.LocalEndPoint}");
+        Channel = new ClientNetChannel(connection, new ClientLengthPrefixedProtocol());
+        OnConnected(NetCode.Success);
+        return Channel;
+    }
+    catch (Exception e) {
+        UnityEngine.Debug.LogError(e.ToString());
+        OnConnected(NetCode.Failed);
+        throw;
+    }
+}
+\end{minted}
+\begin{itemize}
+\item ClientFactory.cs再往底层一点儿的细节
+\begin{minted}[fontsize=\scriptsize,linenos=false]{csharp}
+public static class ClientFactory {
+
+    public static async ValueTask<ConnectionContext> ConnectAsync(EndPoint endpoint) {
+        var conn = new SocketConnection(endpoint).StartAsync(); // <<<<<<<<<< 
+        return await conn.ConfigureAwait(false);
+    }
+}
+\end{minted}
+\item SocketConnection.cs : ConnectionContext
+\end{itemize}
+\begin{minted}[fontsize=\scriptsize,linenos=false]{csharp}
+public async ValueTask<ConnectionContext> StartAsync() {
+    await _socket.ConnectAsync(_endPoint).ConfigureAwait(false); // <<<<<<<<<<  
+    var pair = DuplexPipe.CreateConnectionPair(PipeOptions.Default, PipeOptions.Default);
+    LocalEndPoint = _socket.LocalEndPoint;
+    RemoteEndPoint = _socket.RemoteEndPoint;
+    Transport = pair.Transport;
+    _application = pair.Application;
+    _ = ExecuteAsync(); // <<<<<<<<<< 
+    return this;
+}
+private async Task ExecuteAsync() {
+    Exception sendError = null;
+    try {
+        // Spawn send and receive logic
+        var receiveTask = DoReceive();
+        var sendTask = DoSend();
+        // If the sending task completes then close the receive
+        // We don't need to do this in the other direction because the kestrel
+        // will trigger the output closing once the input is complete.
+        if (await Task.WhenAny(receiveTask, sendTask).ConfigureAwait(false) == sendTask) { // 这里什么情况下等,读得稀里糊涂
+            // Tell the reader it's being aborted
+            _socket.Dispose();
+        }
+        // Now wait for both to complete
+        await receiveTask;
+        sendError = await sendTask;
+        // Dispose the socket(should noop if already called)
+        _socket.Dispose();
+    }
+    catch (Exception ex) {
+        Console.WriteLine($"Unexpected exception in {nameof(SocketConnection)}.{nameof(StartAsync)}: " + ex);
+    }
+    finally {
+        // Complete the output after disposing the socket
+        _application.Input.Complete(sendError);
+    }
+}
+\end{minted}
+\begin{itemize}
+\item 
+\end{itemize}
 % Emacs 27.2 (Org mode 8.2.7c)
 \end{document}

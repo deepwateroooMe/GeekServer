@@ -10,9 +10,11 @@ namespace Geek.Client {
         public abstract void ForceSetResult();
     }
 
-    public class ActionWrapper : WorkWrapper {
+    public class ActionWrapper : WorkWrapper { // Actor Wrapper ? 关系
+
         public Action Work { private set; get; }
         public TaskCompletionSource<bool> Tcs { private set; get; }
+
         public ActionWrapper(Action work) {
             this.Work = work;
             Tcs = new TaskCompletionSource<bool>();
