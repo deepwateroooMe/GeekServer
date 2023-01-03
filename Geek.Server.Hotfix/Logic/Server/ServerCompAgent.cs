@@ -31,7 +31,7 @@ namespace Server.Logic.Logic.Server {
             Comp.OnlineSet.Add(actorId);
             return ValueTask.CompletedTask;
         }
-        [Service]
+        [Service]　
         [Discard]
         public virtual ValueTask RemoveOnlineRole(long actorId) {
             Comp.OnlineSet.Add(actorId);

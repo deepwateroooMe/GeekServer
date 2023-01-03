@@ -15,16 +15,17 @@ namespace Geek.Server.App.Common {
 
         static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public static async Task Enter() {
+        public static async Task Enter() {　// 虽然这里写的是 进入游戏,但游戏只要在执行,就无限循环,直到所有客户端退出 吗 ?
             try {
                 var flag = Start(); // <<<<<<<<<<<<<<<<<<<< 
                 if (!flag) return; // 启动服务器失败
                 Log.Info($"launch embedded db...");
                 ActorLimit.Init(ActorLimit.RuleType.None); // actor 消息
-                GameDB.Init();
+                GameDB.Init(); // 服务器 一定要数据 吗 ?
                 GameDB.Open();
                 Log.Info($"regist comps...");
                 await CompRegister.Init();
+
                 Log.Info($"load hotfix module");
                 await HotfixMgr.LoadHotfixModule(); // 这个过程中, TcpServer HttpServer的WebApplication创建启动过程不懂,有些日志找不到
 				// F:\unityGamesExamples\GeekServer\bin\app_debug\hotfix/Geek.Server.Hotfix.dll: 并不知道这个程序集中有什么文件源码 ?
@@ -34,7 +35,7 @@ namespace Geek.Server.App.Common {
                 Settings.LauchTime = DateTime.Now;
                 Settings.AppRunning = true;
                 TimeSpan delay = TimeSpan.FromSeconds(1);
-                while (Settings.AppRunning) { // 在服务器运行过程中,无限循环 
+                while (Settings.AppRunning) { // 在服务器运行过程中,无限循环 去找有什么地方改候改这个属性,触发结束
                     await Task.Delay(delay);
                 }
             }
@@ -42,7 +43,7 @@ namespace Geek.Server.App.Common {
                 Console.WriteLine($"服务器执行异常，e:{e}");
                 Log.Fatal(e);
             }
-            Console.WriteLine($"退出服务器开始");
+            Console.WriteLine($"退出服务器开始"); // 这两行日志没太注意,没抓到
             await HotfixMgr.Stop();
             Console.WriteLine($"退出服务器成功");
         }

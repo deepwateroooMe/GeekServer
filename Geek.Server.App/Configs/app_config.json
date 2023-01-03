@@ -11,6 +11,6 @@
   "LocalDBPath": "../../database/game/",
   "SDKType": 0,
   "DBModel": 0, //0:内嵌 1:mongodb
-  "MongoUrl": "mongodb://127.0.0.1:27017/?authSource=admin",
+  "MongoUrl": "mongodb://127.0.0.1:27017/?authSource=admin", // 不是服务器，是数据库的地址:　是写在配置文件里的
   "MongoDBName": "geek_server"
 }

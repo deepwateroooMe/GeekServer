@@ -79,7 +79,7 @@ namespace Geek.Client {
             });
         }
         public void Close() {
-            Channel?.Abort();
+            Channel?.Abort(); // 连接　客户端　异步释放资源
         }
     }
 }

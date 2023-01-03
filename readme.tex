@@ -1,4 +1,4 @@
-% Created 2023-01-02 Mon 11:27
+% Created 2023-01-02 Mon 21:15
 \documentclass[9pt, b5paper]{article}
 \usepackage{xeCJK}
 \usepackage{minted}
@@ -39,9 +39,40 @@
 \item 到现在为止,基本上只找到了这一个自己可以运行的本地热更新服务器的框架.所源码基本上都读了一遍,但因为对自己来说服务器是完全陌生的领域,它读起来甚至比ET框架难多了,有不少不熟悉的概念与原理,比如Actor, TCP　WebSocket等。这个框架可能学习curve会稍微陡峭一点儿,涉及到的尖端知识点比较多,比如用的是RocksDB等,很多原理自己会一一学习掌握
 \item 但因为它能够运行,今天下午终于能够看进改掉visual studio 2019终端显示中文的问题.就再从运行日志入手,借助日志,把这个本地服务器弄得再明白一点儿后,准备开始着手写自己最简单的热更新服务器.
 \item 这里的本地热更新服务器,与项目中游戏里的游戏客户端,接下来会需要从两端都运行,来分析学习源码.先从服务器入手
-\item 今天只主要参照本地服务器的运行日志,把相对的大致步骤过程细节再补看了一遍源码.有些部分仍然不懂.
-\item 明天上午会补些服务器端的基础知道,同游戏引擎客户端结合起来运行再理解消化一下这个框架
+\item 现在才明白，这个框架更多的是支持服务器的热更新，与自已想要实现的最简单的相差狠远。我基本可以不需要热更新我的安卓平台客户端游戏的热更新服务器。
 \end{itemize}
+
+\includegraphics[width=.9\linewidth]{./pic/readme_20230102_205637.png}
+\begin{itemize}
+\item 因为同自已的项目需要，还是相差得比较远，所以这个项目暂时也还是放一下。但任何时候都可以成为学习的资源再深化理解一下。　
+\begin{itemize}
+\item 热更思路: 这是关于服务器热更新的逻辑，我基本上用不到，我现在可以不用考虑服务器的热更新，只要客户端的游戏可以热更新就可以了
+\begin{itemize}
+\item 游戏中的所有状态放在App工程中，始终存在于内存，不能热更。Actor和Component的逻辑使用代理模式（Agent）放到Hotfix工程。热更时载入新的dll（GeekServer.Hotfix.dll），清除所有老的Agent，所有新逻辑重新从Actor/Component获取新的Agent汇入新dll中执行热更后的逻辑，达到热更目的。正在执行老dll逻辑的代码获取的Agent依然来自热更前的老Dll中，等待老dll中的逻辑执行完后清理掉内存中老的dll。底层使用接口驱动热更dll中的逻辑。 需要注意的是，热更时新的dll需要放在新的目录下面，然后再载入内存，因为老的dll可能正在运行，是无法直接覆盖的。参考代码HotfixModule.Load
+\end{itemize}
+\item 可以热更部分
+\begin{itemize}
+\item 位置：可以热更的逻辑都应该放在GeekServer.Hotfix工程中
+\item 所有Actor/Component的Agent，Agent中只有逻辑没有状态，状态全部放到Component的State
+\item HttpHandler
+\item TcpHandler
+\item 协议
+\item 配置表/配置表代码
+\end{itemize}
+
+\item 热更新流程
+\begin{itemize}
+\item 游戏后台将新的GeekServer.Hotfix.dll及相关文件（对应pdb，json等）拷贝到游戏服特定目录下
+\item 游戏后台向游戏服发送http命令，通知进行热更，并告知dll目录，md5等信息
+\item 游戏服中热更HttpHandler根据后台信息，验证热更dll完整性，合法性，修改dllVersion.txt，发起热更调用
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\#+END\_SRC
+\begin{itemize}
+\item 所以是，一不小心，读了一个好难的服务器热更新的框架源码！虽然明确感受到learning curve一下子猛增，但还是收获狠多的。以后爬爬源码什么的会感觉轻松无压力。。。。。爱表哥，爱生活！！！
+\end{itemize}
+
 \begin{minted}[fontsize=\scriptsize,linenos=false]{text}
 init NLog config...
 ***PolymorphicRegister Init***
@@ -134,7 +165,7 @@ UnityEngine.Debug:Log (object)
 Geek.Client.GameClient:Init () (at Assets/Scripts/Framework/Net/GameClient.cs:33)
 Logic.GameMain/<Start>d__7:MoveNext () (at Assets/Scripts/Logic/GameMain.cs:28)
 
-Connected to 127.0.0.1:62275
+Connected to 127.0.0.1:62275 // 这里感觉是服务器里的日志，找不到
 UnityEngine.Debug:Log (object)
 Geek.Client.GameClient/<Connect>d__23:MoveNext () (at Assets/Scripts/Framework/Net/GameClient.cs:60)
 UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
@@ -147,11 +178,11 @@ Logic.DemoService:OnConnectServer (Geek.Client.Event) (at Assets/Scripts/Logic/D
 UnityEngine.Debug:Log (object)
 Logic.DemoService:OnConnectServer (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:86)
 
-deal msg:785960738>Geek.Server.Proto.ResLogin
+deal msg:785960738>Geek.Server.Proto.ResLogin　// <<<<<<<<<<<<<<<<<<<< 这里是从哪里来的 　
 UnityEngine.Debug:Log (object)
 Logic.DemoService:GetCurMsg<Geek.Server.Proto.ResLogin> (int) (at Assets/Scripts/Logic/DemoService.cs:51)
 
-2168:登录成功!
+2678:登录成功!　// 这个号不知道哪里来的
 UnityEngine.Debug:Log (object)
 Logic.DemoService:OnResLogin (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:99)
 
@@ -198,7 +229,7 @@ Logic.DemoService:OnDisconnectServer (Geek.Client.Event) (at Assets/Scripts/Logi
 \end{minted}
 
 \begin{itemize}
-\item 这里分两块初始化的代码主要来自于服务器热更新中的代码:
+\item HotfixBridge.cs: 服务器端：这里分两块初始化的代码主要来自于服务器热更新中的代码:
 \end{itemize}
 \begin{minted}[fontsize=\scriptsize,linenos=false]{csharp}
 namespace Server.Logic.Common {
@@ -253,6 +284,9 @@ namespace Server.Logic.Common {
     }
 }
 \end{minted}
+\begin{itemize}
+\item 客户端:
+\end{itemize}
 
 \section{TcpServer}
 \label{sec-2}
@@ -380,7 +414,7 @@ namespace System.Threading.Tasks
 \section{GameClient.cs}
 \label{sec-7}
 \begin{itemize}
-\item 与远程服务器连接的部分
+\item async Task<ClientNetChannel> Connect(string host, int port) : 与远程服务器连接的部分
 \end{itemize}
 \begin{minted}[fontsize=\scriptsize,linenos=false]{csharp}
 public int Port { private set; get; }

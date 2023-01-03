@@ -42,7 +42,7 @@ namespace Server.Logic.Common {
             return true;
         }
 
-        public async Task Stop() {
+        public async Task Stop() { // 当服务器退出的时候,会调用要求客户端热更新域也退出 ?
             // 断开所有连接
             await SessionManager.RemoveAll();
             // 取消所有未执行定时器

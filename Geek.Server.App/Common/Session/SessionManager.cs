@@ -38,11 +38,11 @@ namespace Geek.Server.App.Common.Session {
         public static void Add(Session session) {
             if (sessionMap.TryGetValue(session.Id, out var oldSession) && oldSession.Channel != session.Channel) {
                 if (oldSession.Sign != session.Sign) {
-                    var msg = new ResPrompt {
+                    var msg = new ResPrompt { // 不是说,自已顶,自已的号是不会发生的吗 ? 自已的号可以在不同的设备上登录
                         Type = 5,
                         Content = "你的账号已在其他设备上登陆"
-                    };
-                    oldSession.WriteAsync(msg); // 这里是用 oldSession 来写提示信息的 ?
+                    }; // 下面异步写: 的意思是说,由远程服务器端 异步写到 客户端用户先前登录的设备上去,感觉不到异步.....
+                    oldSession.WriteAsync(msg); // 给先前登录上的号一个提醒, 把先前登录设置上的登录,可能会是自动登出,移除?
                 }
                 // 新连接 or 顶号
                 oldSession.Channel.RemoveSessionId();

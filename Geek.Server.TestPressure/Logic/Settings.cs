@@ -9,6 +9,7 @@ namespace Geek.Server.TestPressure.Logic
         public string serverIp;
         public int serverPort;
         public int clientCount;
+
         public static void Load(string path)
         {
             var configJson = File.ReadAllText(path);

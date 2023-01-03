@@ -27,10 +27,11 @@ namespace Logic {
             GameDataManager.ReloadAll();
             GameClient.Singleton.Init();
             DemoService.Singleton.RegisterEventListener();
-// 异步顺序执行的步骤: 写得好像流水
+// 异步顺序执行的步骤: 写得好像流水。
+// 我的项目里，会需要　两端资源文件的比对，必要时下载新的资源包（但是感觉这些我的客户端里已经有了，缺服务端）
             await ConnectServer(); // 专员等待　异步结果
             await Login();         // 专员等待　异步结果
-            await ReqBagInfo();    // 专员等待　异步结果
+            await ReqBagInfo();    // 专员等待　异步结果 其它的,这些我并不需要
             await ReqComposePet(); // 专员等待　异步结果
         }
 
@@ -66,13 +67,13 @@ namespace Logic {
             return DemoService.Singleton.SendMsg(req);
         }
 
-        private void OnApplicationQuit() {
+        private void OnApplicationQuit() { // MonoBehaviour 里的回调方法
             Debug.Log("OnApplicationQuit");
             GameClient.Singleton.Close();
-            MsgWaiter.DisposeAll();
+            MsgWaiter.DisposeAll(); //　清理　释放资源：那些个专职工作人员
         }
 
-        public void AppendLog(string str) {
+        public void AppendLog(string str) { // 这是往视图里写了几个字符串
             if (Txt != null) {
                 var temp = Txt.text + "\r\n";
                 temp += str;

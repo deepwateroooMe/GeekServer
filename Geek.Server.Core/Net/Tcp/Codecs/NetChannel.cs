@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Connections;
 
 namespace Geek.Server.Core.Net.Tcp.Codecs {
 
+// 信道 管理:     
     public class NetChannel {
         static readonly NLog.Logger LOGGER = NLog.LogManager.GetCurrentClassLogger();
         public const string SESSIONID = "SESSIONID";
@@ -10,16 +11,17 @@ namespace Geek.Server.Core.Net.Tcp.Codecs {
         public ConnectionContext Context { get; protected set; }
         public ProtocolReader Reader { get; protected set; }
         protected ProtocolWriter Writer { get; set; }
-        public IProtocal<NMessage> Protocol { get; protected set; }
+        public IProtocal<NMessage> Protocol { get; protected set; } // 接口没有定义什么,基本为空
 
+// 一个网络信道的几大信: 信道上下文,读 写,通信公认协议,和信道关闭的回调事件        
         public NetChannel(ConnectionContext context, IProtocal<NMessage> protocal) {
             Context = context;
             Reader = context.CreateReader();
             Writer = context.CreateWriter();
             Protocol = protocal;
-            Context.ConnectionClosed.Register(ConnectionClosed); // 这里为什么要注册这个回调？说当信道关掉的时候，调用这个回调
+            Context.ConnectionClosed.Register(ConnectionClosed); 
         }
-        protected virtual void ConnectionClosed() {
+        protected virtual void ConnectionClosed() { // 上下文的抽象基类里,会执行上下文的自动关闭,这里就不用管了
             Reader = null;
             Writer = null;
         }

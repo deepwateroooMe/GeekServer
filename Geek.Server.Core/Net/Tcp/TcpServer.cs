@@ -32,6 +32,7 @@ namespace Geek.Server.Core.Net.Tcp {
         }
 
         public static Task Start(int port, Action<ListenOptions> configure) {
+            Console.WriteLine(TAG + " Start()");
             var builder = WebApplication.CreateBuilder();
             builder.WebHost.UseKestrel(options => {
                 options.ListenAnyIP(port, configure);

@@ -14,9 +14,9 @@ namespace Geek.Server.App {
 
         static async Task Main(string[] args) {
             try {
-                AppExitHandler.Init(HandleExit);
+                AppExitHandler.Init(HandleExit); // 服务器 的退出后执行程序,与客户端无关
                 GameLoopTask = AppStartUp.Enter();
-                await GameLoopTask;
+                await GameLoopTask;　// 等待这个执行完:远程服务器的启动狠花时间，要等狠久狠久。。。。。
                 if (ShutDownTask != null)
                     await ShutDownTask;
             }
@@ -32,12 +32,12 @@ namespace Geek.Server.App {
                 File.WriteAllText("server_error.txt", $"{error}", Encoding.UTF8);
             }
         }
-        private static void HandleExit() {
+        private static void HandleExit() { // 服务器退出的时候的回调：做哪些事情
             if (ExitCalled)
                 return;
             ExitCalled = true;
             Log.Info($"监听到退出程序消息");
-            ShutDownTask = Task.Run(() => {
+            ShutDownTask = Task.Run(() => { // 执行关闭远程服务器的任务:分几步
                 Settings.AppRunning = false;
                 GameLoopTask?.Wait();
                 LogManager.Shutdown();
