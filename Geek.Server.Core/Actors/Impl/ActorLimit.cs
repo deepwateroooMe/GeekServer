@@ -19,7 +19,7 @@ namespace Geek.Server.Core.Actors.Impl {
             NoBidirectionCall
         }
 
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger(); // 分每个类【类名】来分类记日志 
         private static IRule rule;
         private static readonly Dictionary<ActorType, int> levelDic = new();
 

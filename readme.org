@@ -3,18 +3,17 @@
 #+author: deepwaterooo
 
 * 手机游戏平台热更新服务器--一个实例学习笔记
-- 到现在为止,基本上只找到了这一个自己可以运行的本地热更新服务器的框架.所源码基本上都读了一遍,但因为对自己来说服务器是完全陌生的领域,它读起来甚至比ET框架难多了,有不少不熟悉的概念与原理,比如Actor, TCP　WebSocket等。这个框架可能学习curve会稍微陡峭一点儿,涉及到的尖端知识点比较多,比如用的是RocksDB等,很多原理自己会一一学习掌握 
+- 到现在为止,基本上只找到了这一个自己可以运行的本地热更新服务器的框架.所源码基本上都读了一遍,但因为对自己来说服务器是完全陌生的领域,它读起来甚至比ET框架难多了,有不少不熟悉的概念与原理,比如Actor, TCP WebSocket等。这个框架可能学习curve会稍微陡峭一点儿,涉及到的尖端知识点比较多,比如用的是RocksDB等,很多原理自己会一一学习掌握 
 - 但因为它能够运行,今天下午终于能够看进改掉visual studio 2019终端显示中文的问题.就再从运行日志入手,借助日志,把这个本地服务器弄得再明白一点儿后,准备开始着手写自己最简单的热更新服务器.
 - 这里的本地热更新服务器,与项目中游戏里的游戏客户端,接下来会需要从两端都运行,来分析学习源码.先从服务器入手
 - 现在才明白，这个框架更多的是支持服务器的热更新，与自已想要实现的最简单的相差狠远。我基本可以不需要热更新我的安卓平台客户端游戏的热更新服务器。
-  
-[[./pic/readme_20230102_205637.png]]
-- 因为同自已的项目需要，还是相差得比较远，所以这个项目暂时也还是放一下。但任何时候都可以成为学习的资源再深化理解一下。　
+
+- 因为同自已的项目需要，还是相差得比较远，所以这个项目暂时也还是放一下。但任何时候都可以成为学习的资源再深化理解一下。
   - 热更思路: 这是关于服务器热更新的逻辑，我基本上用不到，我现在可以不用考虑服务器的热更新，只要客户端的游戏可以热更新就可以了
     - 游戏中的所有状态放在App工程中，始终存在于内存，不能热更。Actor和Component的逻辑使用代理模式（Agent）放到Hotfix工程。热更时载入新的dll（GeekServer.Hotfix.dll），清除所有老的Agent，所有新逻辑重新从Actor/Component获取新的Agent汇入新dll中执行热更后的逻辑，达到热更目的。正在执行老dll逻辑的代码获取的Agent依然来自热更前的老Dll中，等待老dll中的逻辑执行完后清理掉内存中老的dll。底层使用接口驱动热更dll中的逻辑。 需要注意的是，热更时新的dll需要放在新的目录下面，然后再载入内存，因为老的dll可能正在运行，是无法直接覆盖的。参考代码HotfixModule.Load
   - 可以热更部分
     - 位置：可以热更的逻辑都应该放在GeekServer.Hotfix工程中
-    - 所有Actor/Component的Agent，Agent中只有逻辑没有状态，状态全部放到Component的State
+    - 所有Actor/Component的Agent，Agent中只有逻辑没有状态， *状态全部放到Component的State*
     - HttpHandler
     - TcpHandler
     - 协议
@@ -29,18 +28,18 @@
 
 #+BEGIN_SRC text
 init NLog config...
-***PolymorphicRegister Init***
- INFO  launch embedded db...
- INFO  regist comps...
+,***PolymorphicRegister Init*** 这个是 Proto 进程间消息传递启动时的日志
+ INFO  launch embedded db...h
+ INFO  regist comps... 【注册服务器的各种必要组件】：Comp 【Login, Bag, Pet, Role, Server】 ＋ Func
  INFO  初始化组件注册完成
  INFO  load hotfix module
 LoadHotfixModule: reload = False
  INFO  hotfix dll init success: F:\unityGamesExamples\GeekServer\bin\app_debug\hotfix/Geek.Server.Hotfix.dll
 HotfixMgr (module.HotfixBridge != null) = True
 
-// <<<<<<<<<< 我找不到下面这些是从哪里来,不知道是不是什么第三方库的.dll程序集里出来的,又或者是数据库 ? .NET Core WEB ?
-
-// 感觉这是 TcpServer WebApplication创建时,内部生成的, 其内部创建实现原理不是很懂
+当下面看丢找不到的时候，就去找前面【服务器的各种必要组件】：某个或是某些组件，就可能会生产下面的日志
+    
+// 感觉这是 TcpServer WebApplication Builder创建时,内部生成的, 其内部创建实现原理不是很懂【看不见源码，找不到具体的日志】
  DEBUG  Hosting starting
  INFO  Now listening on: http://[::]:8899
  DEBUG  Loaded hosting startup assembly Geek.Server.App
@@ -67,11 +66,12 @@ HotfixBridge tcp 服务启动完成...
  INFO  激活全局组件并检测组件是否都包含Agent实现完成
 
  INFO  进入游戏主循环...
-        ***进入游戏主循环***
+        ,***进入游戏主循环***
 
-// 下面这两行日志好像又找不到了
+// 下面这两行：【ServerCompAgent 类】里面的：是否与上面注册组件时，注册过，与上面激活组件时，激活了，便开始运转
  DEBUG  ServerCompAgent.TestSchedueTimer.延时1秒执行.每隔30秒执行
  DEBUG  ServerCompAgent.TestDelayTimer.延时3秒执行.执行一次
+ 
  DEBUG  Connection id "0HMNCUJ22HQ5P" accepted.
  DEBUG  Connection id "0HMNCUJ22HQ5P" started.
  DEBUG  [::ffff:127.0.0.1]:62275 链接成功
@@ -105,7 +105,7 @@ HotfixBridge tcp 服务启动完成...
 // 当服务端关掉之后
 F:\unityGamesExamples\GeekServer\bin\app_debug\Geek.Server.App.exe (process 13744) exited with code -1.
 To automatically close the console when debugging stops, enable Tools->Options->Debugging->Automatically close the console when debugging stops.
-Press any key to close this window . . .　
+Press any key to close this window . . .
 #+END_SRC
 - unity游戏客户端的部分
 
@@ -130,11 +130,11 @@ Logic.DemoService:OnConnectServer (Geek.Client.Event) (at Assets/Scripts/Logic/D
 UnityEngine.Debug:Log (object)
 Logic.DemoService:OnConnectServer (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:86)
 
-deal msg:785960738>Geek.Server.Proto.ResLogin　// <<<<<<<<<<<<<<<<<<<< 这里是从哪里来的 　
+deal msg:785960738>Geek.Server.Proto.ResLogin　// <<<<<<<<<<<<<<<<<<<< 这里是从哪里来的 
 UnityEngine.Debug:Log (object)
 Logic.DemoService:GetCurMsg<Geek.Server.Proto.ResLogin> (int) (at Assets/Scripts/Logic/DemoService.cs:51)
 
-2678:登录成功!　// 这个号不知道哪里来的
+2678:登录成功!// 这个号不知道哪里来的
 UnityEngine.Debug:Log (object)
 Logic.DemoService:OnResLogin (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:99)
 
@@ -171,8 +171,7 @@ UnityEngine.Debug:Log (object)
 Logic.GameMain:OnApplicationQuit () (at Assets/Scripts/Logic/GameMain.cs:70)
 
 127.0.0.1:8899 服务器断开链接
-UnityEngine.Debug:Log (object)
-Geek.Client.NetChannel:ConnectionClosed () (at Assets/Scripts/Framework/Net/NetChannel.cs:26)
+UnityEngine.Debug:Log (objeGeek.Client.NetChannel:ConnectionClosed () (at Assets/Scripts/Framework/Net/NetChannel.cs:26)
 Geek.Client.ClientNetChannel:ConnectionClosed () (at Assets/Scripts/Framework/Net/ClientNetChannel.cs:19)
 
 与服务器断开!
@@ -286,7 +285,7 @@ internal class AppStartUp {
         try {
             Settings.Load<AppSetting>("Configs/app_config.json", ServerType.Game); // 服务器的配置文件 
 
-            Console.WriteLine("init NLog config..."); // 配置日志系统:　CPU/IO 密集型的服务器,日志就显示狠复杂[暂放一下]
+            Console.WriteLine("init NLog config..."); // 配置日志系统:CPU/IO 密集型的服务器,日志就显示狠复杂[暂放一下]
             LayoutRenderer.Register<NLogConfigurationLayoutRender>("logConfiguration");
             LogManager.Configuration = new XmlLoggingConfiguration("Configs/app_log.config");
             LogManager.AutoShutdown = false;
@@ -349,7 +348,7 @@ namespace System.Threading.Tasks
         public bool TrySetResult(TResult result);
     }
 }  
-#+END_SRC
+ #+END_SRC
 * GameClient.cs
 - async Task<ClientNetChannel> Connect(string host, int port) : 与远程服务器连接的部分
 #+BEGIN_SRC csharp
@@ -425,4 +424,104 @@ private async Task ExecuteAsync() {
     }
 }
 #+END_SRC
-- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,11 +1,14 @@
-% Created 2023-01-02 Mon 21:15
+% Created 2023-05-06 Sat 15:51
+% Intended LaTeX compiler: pdflatex
 \documentclass[9pt, b5paper]{article}
 \usepackage{xeCJK}
-\usepackage{minted}
 \usepackage[T1]{fontenc}
+\usepackage{bera}
 \usepackage[scaled]{beraserif}
 \usepackage[scaled]{berasans}
 \usepackage[scaled]{beramono}
+\usepackage[cache=false]{minted}
+\usepackage{xltxtra}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{multirow}
@@ -18,15 +21,18 @@
 \usepackage{natbib}
 \usepackage{geometry}
 \geometry{left=1.2cm,right=1.2cm,top=1.5cm,bottom=1.2cm}
-\newminted{common-lisp}{fontsize=\footnotesize} 
 \usepackage[xetex,colorlinks=true,CJKbookmarks=true,linkcolor=blue,urlcolor=blue,menucolor=blue]{hyperref}
+\newminted{common-lisp}{fontsize=\footnotesize} 
 \author{deepwaterooo}
 \date{\today}
 \title{手机游戏平台热更新服务器--一个实例学习笔记GeekServer}
 \hypersetup{
-  pdfkeywords={},
-  pdfsubject={},
-  pdfcreator={Emacs 27.2 (Org mode 8.2.7c)}}
+ pdfauthor={deepwaterooo},
+ pdftitle={手机游戏平台热更新服务器--一个实例学习笔记GeekServer},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 28.2 (Org mode 9.5.5)}, 
+ pdflang={English}}
 \begin{document}
 
 \maketitle
@@ -34,17 +40,14 @@
 
 
 \section{手机游戏平台热更新服务器--一个实例学习笔记}
-\label{sec-1}
+\label{sec:org258c433}
 \begin{itemize}
-\item 到现在为止,基本上只找到了这一个自己可以运行的本地热更新服务器的框架.所源码基本上都读了一遍,但因为对自己来说服务器是完全陌生的领域,它读起来甚至比ET框架难多了,有不少不熟悉的概念与原理,比如Actor, TCP　WebSocket等。这个框架可能学习curve会稍微陡峭一点儿,涉及到的尖端知识点比较多,比如用的是RocksDB等,很多原理自己会一一学习掌握
+\item 到现在为止,基本上只找到了这一个自己可以运行的本地热更新服务器的框架.所源码基本上都读了一遍,但因为对自己来说服务器是完全陌生的领域,它读起来甚至比ET框架难多了,有不少不熟悉的概念与原理,比如Actor, TCP WebSocket等。这个框架可能学习curve会稍微陡峭一点儿,涉及到的尖端知识点比较多,比如用的是RocksDB等,很多原理自己会一一学习掌握
 \item 但因为它能够运行,今天下午终于能够看进改掉visual studio 2019终端显示中文的问题.就再从运行日志入手,借助日志,把这个本地服务器弄得再明白一点儿后,准备开始着手写自己最简单的热更新服务器.
 \item 这里的本地热更新服务器,与项目中游戏里的游戏客户端,接下来会需要从两端都运行,来分析学习源码.先从服务器入手
 \item 现在才明白，这个框架更多的是支持服务器的热更新，与自已想要实现的最简单的相差狠远。我基本可以不需要热更新我的安卓平台客户端游戏的热更新服务器。
-\end{itemize}
 
-\includegraphics[width=.9\linewidth]{./pic/readme_20230102_205637.png}
-\begin{itemize}
-\item 因为同自已的项目需要，还是相差得比较远，所以这个项目暂时也还是放一下。但任何时候都可以成为学习的资源再深化理解一下。　
+\item 因为同自已的项目需要，还是相差得比较远，所以这个项目暂时也还是放一下。但任何时候都可以成为学习的资源再深化理解一下。
 \begin{itemize}
 \item 热更思路: 这是关于服务器热更新的逻辑，我基本上用不到，我现在可以不用考虑服务器的热更新，只要客户端的游戏可以热更新就可以了
 \begin{itemize}
@@ -76,7 +79,7 @@
 \begin{minted}[fontsize=\scriptsize,linenos=false]{text}
 init NLog config...
 ***PolymorphicRegister Init***
- INFO  launch embedded db...
+ INFO  launch embedded db...h`
  INFO  regist comps...
  INFO  初始化组件注册完成
  INFO  load hotfix module
@@ -151,13 +154,15 @@ HotfixBridge tcp 服务启动完成...
 // 当服务端关掉之后
 F:\unityGamesExamples\GeekServer\bin\app_debug\Geek.Server.App.exe (process 13744) exited with code -1.
 To automatically close the console when debugging stops, enable Tools->Options->Debugging->Automatically close the console when debugging stops.
-Press any key to close this window . . .　
+Press any key to close this window . . .
 \end{minted}
 \begin{itemize}
 \item unity游戏客户端的部分
 \end{itemize}
 
+\begin{center}
 \includegraphics[width=.9\linewidth]{./pic/readme_20230102_111227.png}
+\end{center}
 
 \begin{minted}[fontsize=\scriptsize,linenos=false]{tex}
 GameClient Init Success in UnityEngine.UnitySynchronizationContext
@@ -178,11 +183,11 @@ Logic.DemoService:OnConnectServer (Geek.Client.Event) (at Assets/Scripts/Logic/D
 UnityEngine.Debug:Log (object)
 Logic.DemoService:OnConnectServer (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:86)
 
-deal msg:785960738>Geek.Server.Proto.ResLogin　// <<<<<<<<<<<<<<<<<<<< 这里是从哪里来的 　
+deal msg:785960738>Geek.Server.Proto.ResLogin　// <<<<<<<<<<<<<<<<<<<< 这里是从哪里来的 
 UnityEngine.Debug:Log (object)
 Logic.DemoService:GetCurMsg<Geek.Server.Proto.ResLogin> (int) (at Assets/Scripts/Logic/DemoService.cs:51)
 
-2678:登录成功!　// 这个号不知道哪里来的
+2678:登录成功!// 这个号不知道哪里来的
 UnityEngine.Debug:Log (object)
 Logic.DemoService:OnResLogin (Geek.Client.Event) (at Assets/Scripts/Logic/DemoService.cs:99)
 
@@ -289,20 +294,22 @@ namespace Server.Logic.Common {
 \end{itemize}
 
 \section{TcpServer}
-\label{sec-2}
+\label{sec:orge04dd52}
 \begin{itemize}
 \item 有些是系统里的类和方法:比如下面的:
 \end{itemize}
 \section{IHost.cs}
-\label{sec-3}
+\label{sec:org5627214}
 
+\begin{center}
 \includegraphics[width=.9\linewidth]{./pic/readme_20230101_222709.png}
+\end{center}
 \begin{itemize}
 \item 这里,WebApplication的内部创建实现原理不是很懂
 \end{itemize}
 
 \section{AppStartUp: 负责服务器的启动}
-\label{sec-4}
+\label{sec:orgfae08eb}
 \begin{minted}[fontsize=\scriptsize,linenos=false]{csharp}
 internal class AppStartUp {
 
@@ -345,7 +352,7 @@ internal class AppStartUp {
         try {
             Settings.Load<AppSetting>("Configs/app_config.json", ServerType.Game); // 服务器的配置文件 
 
-            Console.WriteLine("init NLog config..."); // 配置日志系统:　CPU/IO 密集型的服务器,日志就显示狠复杂[暂放一下]
+            Console.WriteLine("init NLog config..."); // 配置日志系统:CPU/IO 密集型的服务器,日志就显示狠复杂[暂放一下]
             LayoutRenderer.Register<NLogConfigurationLayoutRender>("logConfiguration");
             LogManager.Configuration = new XmlLoggingConfiguration("Configs/app_log.config");
             LogManager.AutoShutdown = false;
@@ -363,9 +370,11 @@ internal class AppStartUp {
 }
 \end{minted}
 \section{服务器的配置文件 Configs/app\_config.json}
-\label{sec-5}
+\label{sec:org5ae68e7}
 
+\begin{center}
 \includegraphics[width=.9\linewidth]{./pic/readme_20230101_180011.png}
+\end{center}
 \begin{minted}[fontsize=\scriptsize,linenos=false]{tex}
 {
   "IsDebug": true,
@@ -386,7 +395,7 @@ internal class AppStartUp {
 \end{minted}
 
 \section{TaskCompletionSource.cs}
-\label{sec-6}
+\label{sec:org789b91e}
 \begin{minted}[fontsize=\scriptsize,linenos=false]{csharp}
 namespace System.Threading.Tasks
 {
@@ -409,10 +418,10 @@ namespace System.Threading.Tasks
         public bool TrySetException(Exception exception);
         public bool TrySetResult(TResult result);
     }
-}
+}  
 \end{minted}
 \section{GameClient.cs}
-\label{sec-7}
+\label{sec:org20a73a2}
 \begin{itemize}
 \item async Task<ClientNetChannel> Connect(string host, int port) : 与远程服务器连接的部分
 \end{itemize}
@@ -494,5 +503,4 @@ private async Task ExecuteAsync() {
 \begin{itemize}
 \item 
 \end{itemize}
-% Emacs 27.2 (Org mode 8.2.7c)
 \end{document}

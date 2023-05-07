@@ -32,9 +32,9 @@ namespace Geek.Server.Core.Comps {
             return comps;
         }
 
-        public static Task Init(Assembly assembly = null) { // 初始化
+        public static Task Init(Assembly assembly = null) { // 初始化：各组件，组件化设计
             if (assembly == null)
-                assembly = Assembly.GetEntryAssembly();
+                assembly = Assembly.GetEntryAssembly(); // 入口程序集
             Type baseCompName = typeof(BaseComp);
             foreach (var type in assembly.GetTypes()) {
                 if (type.IsAbstract || !type.IsSubclassOf(baseCompName)) // 这里只处理基类

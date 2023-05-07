@@ -12,7 +12,7 @@ namespace Server.Logic.Logic.Role.Pet {
 
         readonly NLog.Logger LOGGER = NLog.LogManager.GetCurrentClassLogger();
 
-        [Event(EventID.GotNewPet)]
+        [Event(EventID.GotNewPet)] // 这里这个标注是什么意思
         class EL : EventListener<PetCompAgent> {
             protected override async Task HandleEvent(PetCompAgent agent, Event evt) {
                 switch ((EventID)evt.EventId) {

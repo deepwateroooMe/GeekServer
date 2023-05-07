@@ -15,7 +15,7 @@ namespace Geek.Server.App {
         static async Task Main(string[] args) {
             try {
                 AppExitHandler.Init(HandleExit); // 服务器 的退出后执行程序,与客户端无关
-                GameLoopTask = AppStartUp.Enter();
+                GameLoopTask = AppStartUp.Enter(); 
                 await GameLoopTask;　// 等待这个执行完:远程服务器的启动狠花时间，要等狠久狠久。。。。。
                 if (ShutDownTask != null)
                     await ShutDownTask;

@@ -14,7 +14,7 @@
         Max = 999,
     }
 
-    // 供 ActorLimit 检测调用关系:　里面有个　区分层级的，有限制条件
+    // 供 ActorLimit 检测调用关系: 里面有个 区分层级的，有限制条件
     public enum ActorTypeLevel {
         Role = 1,
         Guild, 

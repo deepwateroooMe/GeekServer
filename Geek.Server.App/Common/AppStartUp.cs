@@ -15,16 +15,16 @@ namespace Geek.Server.App.Common {
 
         static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public static async Task Enter() {　// 虽然这里写的是 进入游戏,但游戏只要在执行,就无限循环,直到所有客户端退出 吗 ?
+        public static async Task Enter() { // 虽然这里写的是 进入游戏,但游戏只要在执行,就无限循环,直到所有客户端退出 
             try {
-                var flag = Start(); // <<<<<<<<<<<<<<<<<<<< 
+                var flag = Start(); // <<<<<<<<<<<<<<<<<<<< 调用了下面的开始方法。如果启动失败，会退出【活宝妹为嫁给亲爱的表哥而努力读书，会好好学习！！！】
                 if (!flag) return; // 启动服务器失败
                 Log.Info($"launch embedded db...");
                 ActorLimit.Init(ActorLimit.RuleType.None); // actor 消息
                 GameDB.Init(); // 服务器 一定要数据 吗 ?
                 GameDB.Open();
                 Log.Info($"regist comps...");
-                await CompRegister.Init();
+                await CompRegister.Init(); // 等待：异步，各组件，初始化完成
 
                 Log.Info($"load hotfix module");
                 await HotfixMgr.LoadHotfixModule(); // 这个过程中, TcpServer HttpServer的WebApplication创建启动过程不懂,有些日志找不到

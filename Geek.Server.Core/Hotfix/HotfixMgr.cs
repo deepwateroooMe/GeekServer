@@ -20,10 +20,10 @@ namespace Geek.Server.Core.Hotfix {
         public static DateTime ReloadTime { get; private set; }
 
         public static async Task<bool> LoadHotfixModule(string dllVersion = "") {
-// 这里是更新服务器的源码吗? 应该是更新 游戏客户端 的源码 ? 下面的文件还没有找到            
+// 这里是更新服务器的源码吗? 服务器端，也是要具备热更新功能的，这里应该是指服务器端的热更新。文件在热更新项目中
             var dllPath = Path.Combine(Environment.CurrentDirectory, string.IsNullOrEmpty(dllVersion) ? "hotfix/Geek.Server.Hotfix.dll" : $"{dllVersion}/Geek.Server.Hotfix.dll");
             var newModule = new HotfixModule(dllPath);
-            bool reload = module != null;
+            bool reload = module != null; // 会需要再加载、重新再加载一遍吗？一次加载成功了，就不需要了
             Console.WriteLine("LoadHotfixModule: reload = " + reload);
             // 起服时失败会有异常抛出
             var success = newModule.Init(reload); // <<<<<<<<<<<<<<<<<<<< 
@@ -52,7 +52,7 @@ namespace Geek.Server.Core.Hotfix {
             }
             module = newModule; // <<<<<<<<<<<<<<<<<<<< 这里是同仁的地方
             Console.WriteLine(TAG + " (module.HotfixBridge != null) = " + (module.HotfixBridge != null)); // true
-            if (module.HotfixBridge != null)
+            if (module.HotfixBridge != null) // 当这里的加载回调非空，就要调用回调通知一下
                 return await module.HotfixBridge.OnLoadSuccess(reload);
             return true;
         }
